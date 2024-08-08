@@ -27,4 +27,4 @@ jobs:
         with:
           file: base/Dockerfile
           push: true
-          tags: niralnetworks/niralos-5g-core:2.2.3.1
+          tags: niralnetworks/niralos-5g-core:2.2.4
