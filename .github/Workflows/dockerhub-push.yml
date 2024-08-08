@@ -23,8 +23,8 @@ jobs:
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: Build and push
-        uses: docker/build-push-action@v5
-        file: 
+        uses: docker/build-push-action@v5 
         with:
+          file: base/Dockerfile
           push: true
-          tags: niralnetworks/niralos-local-sdn:latest
+          tags: niralnetworks/niralos-5g-core:2.2.3.1
