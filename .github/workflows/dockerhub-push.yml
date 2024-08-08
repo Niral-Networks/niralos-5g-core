@@ -28,3 +28,10 @@ jobs:
           file: ims_base/Dockerfile
           push: true
           tags: niralnetworks/niralos-ims:2.2.4
+      -
+        name: Build and push
+        uses: docker/build-push-action@v5 
+        with:
+          file: dns/Dockerfile
+          push: true
+          tags: niralnetworks/niralos-dns:2.2.4
