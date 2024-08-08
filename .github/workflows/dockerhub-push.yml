@@ -35,3 +35,24 @@ jobs:
           file: dns/Dockerfile
           push: true
           tags: niralnetworks/niralos-dns:2.2.4
+      -
+        name: Build and push
+        uses: docker/build-push-action@v5 
+        with:
+          file: pyhss/Dockerfile
+          push: true
+          tags: niralnetworks/niralos-hss:2.2.4
+      -
+        name: Build and push
+        uses: docker/build-push-action@v5 
+        with:
+          file: mysql/Dockerfile
+          push: true
+          tags: niralnetworks/niralos-mysql:2.2.4
+      -
+        name: Build and push
+        uses: docker/build-push-action@v5 
+        with:
+          file: rtpengine/Dockerfile
+          push: true
+          tags: niralnetworks/niralos-rtp-engine:2.2.4
