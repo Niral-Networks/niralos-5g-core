@@ -49,5 +49,5 @@ RUN cd /usr/local/src/kamailio && \
 	make install | tee make_install.txt && \
 	ldconfig
 
-COPY kamailio_init.sh /
+COPY ims_base/kamailio_init.sh /
 CMD ["/kamailio_init.sh"]
