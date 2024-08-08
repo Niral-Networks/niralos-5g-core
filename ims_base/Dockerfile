@@ -43,7 +43,7 @@ RUN mkdir -p /usr/local/src/ && cd /usr/local/src/ && \
 
 # Build and Install Kamailio
 RUN cd /usr/local/src/kamailio && make cfg
-COPY modules.lst /usr/local/src/kamailio/src
+COPY ims_base/modules.lst /usr/local/src/kamailio/src
 RUN cd /usr/local/src/kamailio && \
 	make -j`nproc` Q=0 all | tee make_all.txt && \
 	make install | tee make_install.txt && \
