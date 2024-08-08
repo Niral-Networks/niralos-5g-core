@@ -17,6 +17,293 @@ services:
     networks:
       default:
         ipv4_address: ${MONGO_IP}
+  webui:
+    image: docker_open5gs
+    container_name: webui
+    depends_on:
+      - mongo
+    env_file:
+      - .env
+    environment:
+      - COMPONENT_NAME=webui
+    volumes:
+      - ./webui:/mnt/webui
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    expose:
+      - "9999/tcp"
+    ports:
+      - "9999:9999/tcp"
+    networks:
+      default:
+        ipv4_address: ${WEBUI_IP}
+  nrf:
+    image: docker_open5gs
+    container_name: nrf
+    env_file:
+      - .env
+    environment:
+      - COMPONENT_NAME=nrf-1
+    volumes:
+      - ./nrf:/mnt/nrf
+      - ./log:/open5gs/install/var/log/open5gs
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    expose:
+      - "7777/tcp"
+    networks:
+      default:
+        ipv4_address: ${NRF_IP}
+  scp:
+    image: docker_open5gs
+    container_name: scp
+    env_file:
+      - .env
+    environment:
+      - COMPONENT_NAME=scp-1
+    volumes:
+      - ./scp:/mnt/scp
+      - ./log:/open5gs/install/var/log/open5gs
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    expose:
+      - "7777/tcp"
+    networks:
+      default:
+        ipv4_address: ${SCP_IP}
+  ausf:
+    image: docker_open5gs
+    depends_on:
+      - nrf
+      - scp
+    container_name: ausf
+    env_file:
+      - .env
+    environment:
+      - COMPONENT_NAME=ausf-1
+    volumes:
+      - ./ausf:/mnt/ausf
+      - ./log:/open5gs/install/var/log/open5gs
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    expose:
+      - "7777/tcp"
+    networks:
+      default:
+        ipv4_address: ${AUSF_IP}
+  udr:
+    image: docker_open5gs
+    depends_on:
+      - nrf
+      - scp
+      - mongo
+    container_name: udr
+    env_file:
+      - .env
+    environment:
+      - COMPONENT_NAME=udr-1
+    volumes:
+      - ./udr:/mnt/udr
+      - ./log:/open5gs/install/var/log/open5gs
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    expose:
+      - "7777/tcp"
+    networks:
+      default:
+        ipv4_address: ${UDR_IP}
+  udm:
+    image: docker_open5gs
+    depends_on:
+      - nrf
+      - scp
+    container_name: udm
+    env_file:
+      - .env
+    environment:
+      - COMPONENT_NAME=udm-1
+    volumes:
+      - ./udm:/mnt/udm
+      - ./log:/open5gs/install/var/log/open5gs
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    expose:
+      - "7777/tcp"
+    networks:
+      default:
+        ipv4_address: ${UDM_IP}
+  smf:
+    image: docker_open5gs
+    depends_on:
+      - nrf
+      - scp
+      - amf
+    container_name: smf
+    env_file:
+      - .env
+    environment:
+      - COMPONENT_NAME=smf-1
+      - DEPLOY_MODE=5G
+    volumes:
+      - ./smf:/mnt/smf
+      - ./log:/open5gs/install/var/log/open5gs
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    expose:
+      - "3868/udp"
+      - "3868/tcp"
+      - "3868/sctp"
+      - "5868/udp"
+      - "5868/tcp"
+      - "5868/sctp"
+      - "8805/udp"
+      - "2123/udp"
+      - "7777/tcp"
+      - "9091/tcp"
+    networks:
+      default:
+        ipv4_address: ${SMF_IP}
+  upf:
+    image: docker_open5gs
+    depends_on:
+      - nrf
+      - scp
+      - smf
+    container_name: upf
+    env_file:
+      - .env
+    environment:
+      - COMPONENT_NAME=upf-1
+    volumes:
+      - ./upf:/mnt/upf
+      - ./log:/open5gs/install/var/log/open5gs
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    expose:
+      - "2152/udp"
+      - "8805/udp"
+      - "9091/tcp"
+    # ports:
+    #   - "2152:2152/udp"
+    cap_add:
+      - NET_ADMIN
+    privileged: true
+    sysctls:
+      - net.ipv4.ip_forward=1
+      #- net.ipv6.conf.all.disable_ipv6=0
+    networks:
+      default:
+        ipv4_address: ${UPF_IP}
+  amf:
+    image: docker_open5gs
+    depends_on:
+      - nrf
+      - scp
+      - ausf
+      - udm
+      - udr
+      - pcf
+      - bsf
+    container_name: amf
+    env_file:
+      - .env
+    environment:
+      - COMPONENT_NAME=amf-1
+    volumes:
+      - ./amf:/mnt/amf
+      - ./log:/open5gs/install/var/log/open5gs
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    expose:
+      - "38412/sctp"
+      - "7777/tcp"
+      - "9091/tcp"
+    # ports:
+    #   - "38412:38412/sctp"
+    networks:
+      default:
+        ipv4_address: ${AMF_IP}
+  pcf:
+    image: docker_open5gs
+    depends_on:
+      - nrf
+      - scp
+      - mongo
+    container_name: pcf
+    env_file:
+      - .env
+    environment:
+      - COMPONENT_NAME=pcf-1
+    volumes:
+      - ./pcf:/mnt/pcf
+      - ./log:/open5gs/install/var/log/open5gs
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    expose:
+      - "7777/tcp"
+      - "9091/tcp"
+    networks:
+      default:
+        ipv4_address: ${PCF_IP}
+  bsf:
+    image: docker_open5gs
+    depends_on:
+      - nrf
+      - scp
+      - mongo
+    container_name: bsf
+    env_file:
+      - .env
+    environment:
+      - COMPONENT_NAME=bsf-1
+    volumes:
+      - ./bsf:/mnt/bsf
+      - ./log:/open5gs/install/var/log/open5gs
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    expose:
+      - "7777/tcp"
+    networks:
+      default:
+        ipv4_address: ${BSF_IP}
+  nssf:
+    image: docker_open5gs
+    depends_on:
+      - nrf
+      - scp
+      - mongo
+    container_name: nssf
+    env_file:
+      - .env
+    environment:
+      - COMPONENT_NAME=nssf-1
+    volumes:
+      - ./nssf:/mnt/nssf
+      - ./log:/open5gs/install/var/log/open5gs
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    expose:
+      - "7777/tcp"
+    networks:
+      default:
+        ipv4_address: ${NSSF_IP}
+  metrics:
+    build: ./metrics
+    image: docker_metrics
+    container_name: metrics
+    env_file:
+      - .env
+    volumes:
+      - ./metrics:/mnt/metrics
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    expose:
+      - "9090/tcp"
+    ports:
+      - "9090:9090/tcp"
+    networks:
+      default:
+        ipv4_address: ${METRICS_IP}
   dns:
     build: ./dns
     image: docker_dns
@@ -99,155 +386,6 @@ services:
     networks:
       default:
         ipv4_address: ${PYHSS_IP}
-
-        
-
-  niralos-nrf-1:
-    image: niralnetworks/niralos-5g-core:2.2.3
-    ports:
-      - 9090:9090
-    command: >-
-      bin/bash -c "./install/bin/niralos-nrfd -c /niral_config/yaml/nrf.yaml -l
-      /niral_config/log/nrf.log"
-    volumes:
-      - /home/anurag/niral_config:/niral_config
-    networks:
-      niralos-mesh: null
-    restart: always
-  niralos-scp-1:
-    image: niralnetworks/niralos-5g-core:2.2.3
-    ports:
-      - 9091:9090
-    command: >-
-      bin/bash -c "sleep 10;./install/bin/niralos-scpd -c
-      /niral_config/yaml/scp.yaml -l /niral_config/log/scp.log"
-    volumes:
-      - /home/anurag/niral_config:/niral_config
-    networks:
-      niralos-mesh: null
-    restart: always
-  niralos-udr-1:
-    image: niralnetworks/niralos-5g-core:2.2.3
-    ports:
-      - 9092:9090
-    command: >-
-      bin/bash -c "sleep 20; ./install/bin/niralos-udrd -c
-      /niral_config/yaml/udr.yaml -l /niral_config/log/udr.log"
-    volumes:
-      - /home/anurag/niral_config:/niral_config
-    networks:
-      niralos-mesh: null
-    restart: always
-  niralos-udm-1:
-    image: niralnetworks/niralos-5g-core:2.2.3
-    ports:
-      - 9093:9090
-    command: >-
-      bin/bash -c "sleep 20; ./install/bin/niralos-udmd -c
-      /niral_config/yaml/udm.yaml -l /niral_config/log/udm.log"
-    volumes:
-      - /home/anurag/niral_config:/niral_config
-    networks:
-      niralos-mesh: null
-    restart: always
-  niralos-ausf-1:
-    image: niralnetworks/niralos-5g-core:2.2.3
-    ports:
-      - 9094:9090
-    command: >-
-      bin/bash -c "sleep 20; ./install/bin/niralos-ausfd -c
-      /niral_config/yaml/ausf.yaml -l /niral_config/log/ausf.log"
-    volumes:
-      - /home/anurag/niral_config:/niral_config
-    networks:
-      niralos-mesh: null
-    restart: always
-  niralos-pcf-1:
-    image: niralnetworks/niralos-5g-core:2.2.3
-    ports:
-      - 9095:9090
-    command: >-
-      bin/bash -c "sleep 20; ./install/bin/niralos-pcfd -c
-      /niral_config/yaml/pcf.yaml -l /niral_config/log/pcf.log"
-    volumes:
-      - /home/anurag/niral_config:/niral_config
-    networks:
-      niralos-mesh: null
-    restart: always
-  niralos-bsf-1:
-    image: niralnetworks/niralos-5g-core:2.2.3
-    ports:
-      - 9096:9090
-    command: >-
-      bin/bash -c "sleep 20; ./install/bin/niralos-bsfd -c
-      /niral_config/yaml/bsf.yaml -l /niral_config/log/bsf.log"
-    volumes:
-      - /home/anurag/niral_config:/niral_config
-    networks:
-      niralos-mesh: null
-    restart: always
-  niralos-nssf-1:
-    image: niralnetworks/niralos-5g-core:2.2.3
-    ports:
-      - 9097:9090
-    command: >-
-      bin/bash -c "sleep 20; ./install/bin/niralos-nssfd -c
-      /niral_config/yaml/nssf.yaml -l /niral_config/log/nssf.log"
-    volumes:
-      - /home/anurag/niral_config:/niral_config
-    networks:
-      niralos-mesh: null
-    restart: always
-  niralos-amf-1:
-    image: niralnetworks/niralos-5g-core:2.2.3
-    ports:
-      - 9098:9090
-    command: >-
-      bin/bash -c "sleep 20; ./install/bin/niralos-amfd -c
-      /niral_config/yaml/amf.yaml -l /niral_config/log/amf.log"
-    volumes:
-      - /home/anurag/niral_config:/niral_config
-    networks:
-      niralos-mesh: null
-      # niralos-ngap-gtpu:
-      #   ipv4_address: 10.228.17.12
-    restart: always
-  niralos-smf-1:
-    image: niralnetworks/niralos-5g-core:2.2.3
-    ports:
-      - 9099:9090
-    command: >-
-      bin/bash -c "sleep 20; ./install/bin/niralos-smfd -c
-      /niral_config/yaml/smf.yaml -l /niral_config/log/smf.log"
-    volumes:
-      - /home/anurag/niral_config:/niral_config
-    networks:
-      niralos-mesh: null
-    restart: always
-  niralos-upf-1:
-    image: niralnetworks/niralos-5g-core:2.2.3
-    ports:
-      - 9100:9090
-    privileged: true
-    command: >-
-      bin/bash -c "sleep 20; ip tuntap add name niralos-gw mode tun ; ip addr
-      add 10.101.0.1/16 dev niralos-gw ; sysctl -w
-      net.ipv6.conf.all.disable_ipv6=1 ; ip link set niralos-gw up ; sh -c
-      \"echo 1 > /proc/sys/net/ipv4/ip_forward\" ; iptables -t nat -A
-      POSTROUTING -s 10.101.0.0/16 -p all -j MASQUERADE ; route add
-      default gw 10.228.17.1 ; sleep 20 ; ./install/bin/niralos-upfd -c
-      /niral_config/yaml/upf.yaml -l /niral_config/log/upf.log "
-    volumes:
-      - /home/anurag/niral_config:/niral_config
-    networks:
-      niralos-mesh: null
-      # niralos-ngap-gtpu:
-      #   ipv4_address: 10.228.17.13
-    restart: always
-
-
-
-        
   icscf:
     image: docker_kamailio
     container_name: icscf
@@ -351,17 +489,28 @@ services:
     networks:
       default:
         ipv4_address: ${SMSC_IP}
+  grafana:
+    build: ./grafana
+    image: docker_grafana
+    container_name: grafana
+    env_file:
+      - .env
+    volumes:
+      - ./grafana:/mnt/grafana
+      - /etc/timezone:/etc/timezone:ro
+      - /etc/localtime:/etc/localtime:ro
+    expose:
+      - "3000/tcp"
+    ports:
+      - "3000:3000/tcp"
+    networks:
+      default:
+        ipv4_address: ${GRAFANA_IP}
 networks:
-  # default:
-  #   ipam:
-  #     config:
-  #       - subnet: ${TEST_NETWORK}
-  niralos-mesh:
-    name: niralos-mesh
-    external: true      
-  niralos-ngap-gtpu:
-    name: niralos-ngap-gtpu
-    external: true      
+  default:
+    ipam:
+      config:
+        - subnet: ${TEST_NETWORK}
 volumes:
   mongodbdata: {}
   dbdata: {}
