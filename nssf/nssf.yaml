@@ -25,4 +25,5 @@ nssf:
           - uri: http://NRF_IP:7777
             s_nssai:
               sst: 1
+              sd: 000001
 

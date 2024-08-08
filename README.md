@@ -1,4 +1,3 @@
-Anurag
 # docker_open5gs
 Quite contrary to the name of the repository, this repository contains docker files to deploy an Over-The-Air (OTA) or RF simulated 4G/5G network using following projects:
 - Core Network (4G/5G) - open5gs - https://github.com/open5gs/open5gs
