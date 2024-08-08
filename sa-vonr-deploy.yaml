@@ -352,10 +352,13 @@ services:
       default:
         ipv4_address: ${SMSC_IP}
 networks:
-  default:
-    ipam:
-      config:
-        - subnet: ${TEST_NETWORK}
+  # default:
+  #   ipam:
+  #     config:
+  #       - subnet: ${TEST_NETWORK}
+  niralos-mesh:
+    name: niralos-mesh
+    external: true      
   niralos-ngap-gtpu:
     name: niralos-ngap-gtpu
     external: true      
