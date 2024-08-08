@@ -18,8 +18,8 @@ services:
       default:
         ipv4_address: ${MONGO_IP}
   webui:
-    image: docker_open5gs
-    container_name: webui
+    image: niralos
+    container_name: niralnetworks/niralos-5g-core:2.2.4
     depends_on:
       - mongo
     env_file:
@@ -37,25 +37,40 @@ services:
     networks:
       default:
         ipv4_address: ${WEBUI_IP}
+  # nrf:
+  #   image: niralnetworks/niralos-5g-core:2.2.4
+  #   container_name: nrf
+  #   env_file:
+  #     - .env
+  #   environment:
+  #     - COMPONENT_NAME=nrf-1
+  #   volumes:
+  #     - ./nrf:/mnt/nrf
+  #     - ./log:/open5gs/install/var/log/open5gs
+  #     - /etc/timezone:/etc/timezone:ro
+  #     - /etc/localtime:/etc/localtime:ro
+  #   expose:
+  #     - "7777/tcp"
+  #   networks:
+  #     default:
+  #       ipv4_address: ${NRF_IP}
   nrf:
-    image: docker_open5gs
-    container_name: nrf
-    env_file:
-      - .env
-    environment:
-      - COMPONENT_NAME=nrf-1
+    image: niralnetworks/niralos-5g-core:2.2.3
+    ports:
+      - 9090:9090
+    command: >-
+      bin/bash -c "./install/bin/niralos-nrfd -c /niral_config/yaml/nrf.yaml -l
+      /niral_config/log/nrf.log"
     volumes:
-      - ./nrf:/mnt/nrf
-      - ./log:/open5gs/install/var/log/open5gs
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-    expose:
-      - "7777/tcp"
+      - /home/$USER/git/niralos-5g-core/niral_config:/niral_config
     networks:
       default:
         ipv4_address: ${NRF_IP}
+    restart: always
+
+
   scp:
-    image: docker_open5gs
+    image: niralnetworks/niralos-5g-core:2.2.4
     container_name: scp
     env_file:
       - .env
@@ -72,7 +87,7 @@ services:
       default:
         ipv4_address: ${SCP_IP}
   ausf:
-    image: docker_open5gs
+    image: niralnetworks/niralos-5g-core:2.2.4
     depends_on:
       - nrf
       - scp
@@ -92,7 +107,7 @@ services:
       default:
         ipv4_address: ${AUSF_IP}
   udr:
-    image: docker_open5gs
+    image: niralnetworks/niralos-5g-core:2.2.4
     depends_on:
       - nrf
       - scp
@@ -113,7 +128,7 @@ services:
       default:
         ipv4_address: ${UDR_IP}
   udm:
-    image: docker_open5gs
+    image: niralnetworks/niralos-5g-core:2.2.4
     depends_on:
       - nrf
       - scp
@@ -133,7 +148,7 @@ services:
       default:
         ipv4_address: ${UDM_IP}
   smf:
-    image: docker_open5gs
+    image: niralnetworks/niralos-5g-core:2.2.4
     depends_on:
       - nrf
       - scp
@@ -164,7 +179,7 @@ services:
       default:
         ipv4_address: ${SMF_IP}
   upf:
-    image: docker_open5gs
+    image: niralnetworks/niralos-5g-core:2.2.4
     depends_on:
       - nrf
       - scp
@@ -195,7 +210,7 @@ services:
       default:
         ipv4_address: ${UPF_IP}
   amf:
-    image: docker_open5gs
+    image: niralnetworks/niralos-5g-core:2.2.4
     depends_on:
       - nrf
       - scp
@@ -224,7 +239,7 @@ services:
       default:
         ipv4_address: ${AMF_IP}
   pcf:
-    image: docker_open5gs
+    image: niralnetworks/niralos-5g-core:2.2.4
     depends_on:
       - nrf
       - scp
@@ -246,7 +261,7 @@ services:
       default:
         ipv4_address: ${PCF_IP}
   bsf:
-    image: docker_open5gs
+    image: niralnetworks/niralos-5g-core:2.2.4
     depends_on:
       - nrf
       - scp
@@ -267,7 +282,7 @@ services:
       default:
         ipv4_address: ${BSF_IP}
   nssf:
-    image: docker_open5gs
+    image: niralnetworks/niralos-5g-core:2.2.4
     depends_on:
       - nrf
       - scp
@@ -287,26 +302,9 @@ services:
     networks:
       default:
         ipv4_address: ${NSSF_IP}
-  metrics:
-    build: ./metrics
-    image: docker_metrics
-    container_name: metrics
-    env_file:
-      - .env
-    volumes:
-      - ./metrics:/mnt/metrics
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-    expose:
-      - "9090/tcp"
-    ports:
-      - "9090:9090/tcp"
-    networks:
-      default:
-        ipv4_address: ${METRICS_IP}
   dns:
     build: ./dns
-    image: docker_dns
+    image: niralnetworks/niralos-dns
     container_name: dns
     env_file:
       - .env
@@ -321,7 +319,7 @@ services:
         ipv4_address: ${DNS_IP}
   rtpengine:
     build: ./rtpengine
-    image: docker_rtpengine
+    image: niralnetworks/niralos-rtp-engine
     container_name: rtpengine
     privileged: true
     env_file:
@@ -349,7 +347,7 @@ services:
         ipv4_address: ${RTPENGINE_IP}
   mysql:
     build: ./mysql
-    image: docker_mysql
+    image: niralnetworks/niralos-mysql
     container_name: mysql
     env_file:
       - .env
@@ -364,7 +362,7 @@ services:
         ipv4_address: ${MYSQL_IP}
   pyhss:
     build: ./pyhss
-    image: docker_pyhss
+    image: niralnetworks/niralos-hss
     container_name: pyhss
     dns: ${DNS_IP}
     volumes:
@@ -387,7 +385,7 @@ services:
       default:
         ipv4_address: ${PYHSS_IP}
   icscf:
-    image: docker_kamailio
+    image: niralnetworks/niralos-ims
     container_name: icscf
     dns: ${DNS_IP}
     volumes:
@@ -411,7 +409,7 @@ services:
       default:
         ipv4_address: ${ICSCF_IP}
   scscf:
-    image: docker_kamailio
+    image: niralnetworks/niralos-ims
     container_name: scscf
     dns: ${DNS_IP}
     volumes:
@@ -435,7 +433,7 @@ services:
       default:
         ipv4_address: ${SCSCF_IP}
   pcscf:
-    image: docker_kamailio
+    image: niralnetworks/niralos-ims
     container_name: pcscf
     dns: ${DNS_IP}
     privileged: true
@@ -469,7 +467,7 @@ services:
       default:
         ipv4_address: ${PCSCF_IP}
   smsc:
-    image: docker_kamailio
+    image: niralnetworks/niralos-ims
     container_name: smsc
     dns: ${DNS_IP}
     volumes:
@@ -489,23 +487,6 @@ services:
     networks:
       default:
         ipv4_address: ${SMSC_IP}
-  grafana:
-    build: ./grafana
-    image: docker_grafana
-    container_name: grafana
-    env_file:
-      - .env
-    volumes:
-      - ./grafana:/mnt/grafana
-      - /etc/timezone:/etc/timezone:ro
-      - /etc/localtime:/etc/localtime:ro
-    expose:
-      - "3000/tcp"
-    ports:
-      - "3000:3000/tcp"
-    networks:
-      default:
-        ipv4_address: ${GRAFANA_IP}
 networks:
   default:
     ipam:

@@ -1,0 +1,25 @@
+---
+db_uri: "mongodb://niralos-mongo/niralos"
+sbi:
+  server:
+    no_tls: true
+    cacert: "/niral_config/tls/ca.crt"
+    key: "/niral_config/tls/scp.key"
+    cert: "/niral_config/tls/scp.crt"
+  client:
+    no_tls: true
+    cacert: "/niral_config/tls/ca.crt"
+    key: "/niral_config/tls/scp.key"
+    cert: "/niral_config/tls/scp.crt"
+scp:
+  sbi:
+    dev: "eth0"
+    port: 7777
+  service_id: "niralos.scp.001"
+nrf:
+  sbi:
+  - name: "niralos-nrf-1"
+    port: 7777
+parameter: null
+max: null
+time: null

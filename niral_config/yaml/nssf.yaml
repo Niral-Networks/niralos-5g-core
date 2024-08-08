@@ -1,0 +1,34 @@
+---
+sbi:
+  server:
+    no_tls: true
+    cacert: "/niral_config/tls/ca.crt"
+    key: "/niral_config/tls/nssf.key"
+    cert: "/niral_config/tls/nssf.crt"
+  client:
+    no_tls: true
+    cacert: "/niral_config/tls/ca.crt"
+    key: "/niral_config/tls/nssf.key"
+    cert: "/niral_config/tls/nssf.crt"
+nssf:
+  sbi:
+    dev: "eth0"
+    port: 7777
+  metrics:
+    dev: "eth0"
+    port: 9090
+  service_id: "niralos.nssf.001"
+  nsi:
+  - name: "niralos-nrf-1"
+    port: 7777
+    s_nssai:
+      sst: 1
+      sd: "000007"
+      dynamic: 0
+scp:
+  sbi:
+  - name: "niralos-scp-1"
+    port: 7777
+parameter: null
+max: null
+time: null

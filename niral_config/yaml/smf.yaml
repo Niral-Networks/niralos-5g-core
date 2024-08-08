@@ -1,0 +1,79 @@
+---
+logger:
+  file_stat: "/niral_config/smf_stat_archive/smf_stat.log"
+sbi:
+  server:
+    no_tls: true
+    cacert: "/niral_config/tls/ca.crt"
+    key: "/niral_config/tls/smf.key"
+    cert: "/niral_config/tls/smf.crt"
+  client:
+    no_tls: true
+    cacert: "/niral_config/tls/ca.crt"
+    key: "/niral_config/tls/smf.key"
+    cert: "/niral_config/tls/smf.crt"
+smf:
+  sbi:
+    dev: "eth0"
+    port: 7777
+  pfcp:
+    dev: "eth0"
+    port: 8805
+  gtpc:
+    dev: "eth0"
+  gtpu:
+    dev: "eth0"
+  metrics:
+    dev: "eth0"
+    port: 9090
+  service_id: "niralos.smf.001"
+  subnet:
+  - addr: "10.101.0.1/16"
+    dnn: internet
+  p-cscf: "niralos-pcscf"
+        
+  info:
+  - s_nssai:
+    - sst: 1
+      sd: "000007"
+      dnn:
+      - "internet"
+      - "internet2"
+      # - "internet3"
+      dynamic: 0
+  dns:
+  - "8.8.8.8"
+  - "8.8.4.4"
+  
+  dnn:
+  - apn: internet
+    type: IPv4
+    addr: 10.101.0.1/16
+  - apn: internet2
+    type: IPv4
+    addr: 10.102.0.1/16
+  # - apn: internet3
+  #   type: IPv4
+  #   addr: 10.103.0.1/16  
+  mtu: 1400
+  ctf:
+    enabled: "auto"
+  freeDiameter: "./install/etc/freeDiameter/smf.conf"
+scp:
+  sbi:
+  - name: "niralos-scp-1"
+    port: 7777
+# upf:
+#   pfcp:
+#   - name: "niralos-upf-1"
+#     port: 8805
+#     dnn: internet
+#   - name: "niralos-upf-2"
+#     port: 8805  
+#     dnn: internet2
+#   - name: "niralos-upf-3"
+#     port: 8805  
+#     dnn: internet3 
+parameter: null
+max: null
+time: null
