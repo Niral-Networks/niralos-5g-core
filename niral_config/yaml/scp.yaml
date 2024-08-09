@@ -1,5 +1,5 @@
 ---
-db_uri: "mongodb://niralos-mongo/niralos"
+db_uri: "mongodb://172.22.0.2/niralos"
 sbi:
   server:
     no_tls: true
@@ -18,7 +18,7 @@ scp:
   service_id: "niralos.scp.001"
 nrf:
   sbi:
-  - name: "niralos-nrf-1"
+  - name: "172.22.0.12"
     port: 7777
 parameter: null
 max: null

@@ -19,15 +19,15 @@ nssf:
     port: 9090
   service_id: "niralos.nssf.001"
   nsi:
-  - name: "niralos-nrf-1"
+  - name: "172.22.0.12"
     port: 7777
     s_nssai:
       sst: 1
-      sd: "000007"
+      # sd: "000007"
       dynamic: 0
 scp:
   sbi:
-  - name: "niralos-scp-1"
+  - name: "172.22.0.35"
     port: 7777
 parameter: null
 max: null

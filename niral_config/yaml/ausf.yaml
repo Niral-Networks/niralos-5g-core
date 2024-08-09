@@ -17,7 +17,7 @@ ausf:
   service_id: "niralos.ausf.001"
 scp:
   sbi:
-  - name: "niralos-scp-1"
+  - name: "172.22.0.35"
     port: 7777
 parameter: null
 max: null

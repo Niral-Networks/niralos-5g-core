@@ -29,51 +29,41 @@ smf:
   service_id: "niralos.smf.001"
   subnet:
   - addr: "10.101.0.1/16"
-    dnn: internet
-  p-cscf: "niralos-pcscf"
+  p-cscf: "172.22.0.21"
         
   info:
   - s_nssai:
     - sst: 1
-      sd: "000007"
+      # sd: "000007"
       dnn:
       - "internet"
-      - "internet2"
-      # - "internet3"
+      - "ims"
       dynamic: 0
   dns:
   - "8.8.8.8"
   - "8.8.4.4"
   
-  dnn:
-  - apn: internet
-    type: IPv4
-    addr: 10.101.0.1/16
-  - apn: internet2
-    type: IPv4
-    addr: 10.102.0.1/16
-  # - apn: internet3
+  # dnn:
+  # - apn: internet
   #   type: IPv4
-  #   addr: 10.103.0.1/16  
+  #   addr: 10.101.0.1/16 
+  # - apn: ims
+  #   type: IPv4
+  #   addr: 
+
   mtu: 1400
   ctf:
     enabled: "auto"
   freeDiameter: "./install/etc/freeDiameter/smf.conf"
 scp:
   sbi:
-  - name: "niralos-scp-1"
+  - name: "172.22.0.35"
     port: 7777
-# upf:
-#   pfcp:
-#   - name: "niralos-upf-1"
-#     port: 8805
-#     dnn: internet
-#   - name: "niralos-upf-2"
-#     port: 8805  
-#     dnn: internet2
-#   - name: "niralos-upf-3"
-#     port: 8805  
-#     dnn: internet3 
+
+upf:
+  pfcp:
+  - name: "172.22.0.8"
+
 parameter: null
 max: null
 time: null

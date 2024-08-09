@@ -72,6 +72,7 @@ RUN git clone --recursive https://github.com/open5gs/open5gs && cd open5gs && \
     ninja -C build && cd build && ninja install && \
     mkdir -p /open5gs/install/include
 
+
 # Building WebUI of open5gs
 RUN cd open5gs/webui && npm ci
 

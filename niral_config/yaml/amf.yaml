@@ -17,7 +17,7 @@ amf:
     dev: "eth0"
     port: 7777
   ngap:
-    dev: "eth1"
+    dev: "eth0"
     port: 38412
   metrics:
     dev: "eth0"
@@ -40,7 +40,7 @@ amf:
       mnc: "01"
     s_nssai:
     - sst: 1
-      sd: "000007"
+      # sd: "000007"
       dynamic: 0
   security:
     integrity_order:
@@ -65,7 +65,7 @@ amf:
     mcsi: 0
 scp:
   sbi:
-  - addr: "niralos-scp-1"
+  - addr: "172.22.0.35"
     port: 7777
 parameter: null
 max: null
